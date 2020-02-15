@@ -4,6 +4,10 @@ import fs from 'fs-extra';
 
 import Photo from '../models/Photo';
 
+function existsFilePromise(pathImage: string) {
+    return new Promise(resolve => fs.exists(pathImage, exists => resolve(exists)))
+}
+
 export async function getPhotos(req: Request, res: Response): Promise<void> {
     const photos = await Photo.find();
 
@@ -38,7 +42,11 @@ export async function deletePhoto(req: Request, res: Response): Promise<void> {
 
     if (photo) {
         const pathImage = path.resolve(photo.imagePath);
-        await fs.unlink(pathImage);
+        const existsFile = await existsFilePromise(pathImage);
+
+        if (existsFile) {
+            await fs.unlink(pathImage);
+        }
     }
     res.status(200).json(photo);
 }
@@ -51,7 +59,7 @@ export async function updatePhoto(req: Request, res: Response): Promise<void> {
 
     if (photo) {
         const pathImage = path.resolve(photo.imagePath);
-        const existsFile = await new Promise(resolve => fs.exists(pathImage, exists => resolve(exists)));
+        const existsFile = await existsFilePromise(pathImage);
 
         if (existsFile) {
             await fs.unlink(pathImage);
