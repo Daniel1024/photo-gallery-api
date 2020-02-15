@@ -1,4 +1,5 @@
 import App from './app';
+import database from './Database';
 
 class Server {
     app: App;
@@ -7,8 +8,10 @@ class Server {
         this.app = new App();
     }
 
-    start() {
-        this.app.start();
+    async start(): Promise<void> {
+        await database.startConnection();
+        const port = await this.app.start();
+        console.log('Server on port', port);
     }
 }
 

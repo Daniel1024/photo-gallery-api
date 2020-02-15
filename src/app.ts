@@ -1,5 +1,7 @@
 import express, { Application } from 'express';
+import path from 'path';
 import morgan from 'morgan';
+
 import indexRoutes from './routes/IndexRoutes';
 // import helmet from 'helmet';
 
@@ -22,6 +24,9 @@ export default class App {
         // this.app.use(helmet());
         // this.app.use(compression());
         // this.app.use(cors());
+
+        // folder upload
+        this.app.use('/uploads', express.static(path.resolve('uploads')));
     }
 
     routes() {
@@ -30,9 +35,10 @@ export default class App {
 
     start() {
         const port = this.app.get('port');
-
-        this.app.listen(port, () => {
-            console.log('Server on port', port);
+        return new Promise(resolve => {
+            this.app.listen(port, () => {
+                resolve(port);
+            });
         });
     }
 

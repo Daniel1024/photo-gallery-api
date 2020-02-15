@@ -1,4 +1,8 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
+import {
+    createPhoto, deletePhoto, getPhoto, getPhotos, updatePhoto
+} from '../controllers/photo.controller';
+import multer from '../libs/Multer';
 
 class IndexRoutes {
     router: Router;
@@ -8,12 +12,13 @@ class IndexRoutes {
         this.routes();
     }
 
-    public getIndex(req: Request, res: Response): void {
-        res.json({ data: 'Hola Mundo' });
-    }
-
     routes() {
-        this.router.get('/', this.getIndex);
+        this.router.get('/photos', getPhotos);
+        this.router.route('/photo/:id')
+            .get(getPhoto)
+            .put(multer.single('image'), updatePhoto)
+            .delete(deletePhoto);
+        this.router.post('/photo', multer.single('image'), createPhoto);
     }
 }
 
