@@ -53,16 +53,20 @@ export async function deletePhoto(req: Request, res: Response): Promise<void> {
 
 export async function updatePhoto(req: Request, res: Response): Promise<void> {
     const { title, description } = req.body;
-    const imagePath = req.file.path;
     const photoId = req.params.id;
     let photo = await Photo.findById(photoId);
 
     if (photo) {
-        const pathImage = path.resolve(photo.imagePath);
-        const existsFile = await existsFilePromise(pathImage);
+        let imagePath = photo.imagePath || '';
 
-        if (existsFile) {
-            await fs.unlink(pathImage);
+        if(req.file) {
+            imagePath = req.file.path;
+            const pathImage = path.resolve(photo.imagePath);
+            const existsFile = await existsFilePromise(pathImage);
+
+            if (existsFile) {
+                await fs.unlink(pathImage);
+            }
         }
 
         photo.overwrite({
@@ -70,6 +74,7 @@ export async function updatePhoto(req: Request, res: Response): Promise<void> {
             description,
             imagePath
         });
+
         await photo.save();
     }
 
