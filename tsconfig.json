@@ -8,7 +8,6 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "esModuleInterop": true,
-    "inlineSourceMap": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": [
