@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import path from 'path';
 import morgan from 'morgan';
+import cors from 'cors';
 
 import indexRoutes from './routes/IndexRoutes';
 // import helmet from 'helmet';
@@ -16,14 +17,14 @@ export default class App {
 
     config() {
         // Settings
-        this.app.set('port', process.env.PORT || 3000);
+        this.app.set('port', process.env.PORT || 4000);
         // Middleware
         this.app.use(morgan('dev'));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         // this.app.use(helmet());
         // this.app.use(compression());
-        // this.app.use(cors());
+        this.app.use(cors());
 
         // folder upload
         this.app.use('/uploads', express.static(path.resolve('uploads')));
